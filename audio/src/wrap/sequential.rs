@@ -110,7 +110,7 @@ where
         self.channels
     }
 
-    fn get(&self, channel: usize) -> Option<Self::Channel<'_>> {
+    fn get_channel(&self, channel: usize) -> Option<Self::Channel<'_>> {
         let value = self
             .value
             .as_ref()
@@ -121,7 +121,7 @@ where
     }
 
     #[inline]
-    fn iter(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::Iter<'_> {
         (*self).iter()
     }
 }
@@ -175,7 +175,7 @@ where
     where
         Self: 'a;
 
-    fn get_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
+    fn get_channel_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
         let value = self
             .value
             .as_mut()
@@ -201,7 +201,7 @@ where
         }
     }
 
-    fn iter_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
         (*self).iter_mut()
     }
 }

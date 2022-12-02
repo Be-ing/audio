@@ -39,7 +39,7 @@ slice_comparisons!(#[cfg(feature = "std")] {'a, T}, InterleavedChannelMut<'a, T>
 /// This doesn't provide direct access to the underlying buffer, but rather
 /// allows us to copy data usinga  number of utility functions.
 ///
-/// See [Buf::get][crate::Buf::get].
+/// See [Buf::get_channel][crate::Buf::get_channel].
 pub struct InterleavedChannel<'a, T> {
     /// The base pointer of the buffer.
     ptr: ptr::NonNull<T>,
@@ -100,7 +100,7 @@ impl<'a, T> InterleavedChannel<'a, T> {
 /// This doesn't provide direct access to the underlying buffer, but rather
 /// allows us to copy data usinga  number of utility functions.
 ///
-/// See [BufMut::get_mut][crate::BufMut::get_mut].
+/// See [BufMut::get_channel_mut][crate::BufMut::get_channel_mut].
 pub struct InterleavedChannelMut<'a, T> {
     /// The base pointer of the buffer.
     ptr: ptr::NonNull<T>,

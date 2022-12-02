@@ -81,12 +81,12 @@ macro_rules! impl_buf {
             }
 
             #[inline]
-            fn get(&self, channel: usize) -> Option<Self::Channel<'_>> {
+            fn get_channel(&self, channel: usize) -> Option<Self::Channel<'_>> {
                 Some(LinearChannel::new(self.value.get(channel)?))
             }
 
             #[inline]
-            fn iter(&self) -> Self::Iter<'_> {
+            fn iter_channels(&self) -> Self::Iter<'_> {
                 Iter {
                     iter: self.value[..].iter(),
                 }
@@ -119,7 +119,7 @@ macro_rules! impl_buf_mut {
                 Self: 'this;
 
             #[inline]
-            fn get_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
+            fn get_channel_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
                 Some(LinearChannelMut::new(self.value.get_mut(channel)?.as_mut()))
             }
 
@@ -151,7 +151,7 @@ macro_rules! impl_buf_mut {
             }
 
             #[inline]
-            fn iter_mut(&mut self) -> Self::IterMut<'_> {
+            fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
                 IterMut {
                     iter: self.value[..].iter_mut(),
                 }

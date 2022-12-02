@@ -11,11 +11,11 @@ fn test_channels_then_resize() {
 
     let expected = vec![0.0; 1024];
 
-    assert_eq!(buf.get(0).unwrap(), &expected[..]);
-    assert_eq!(buf.get(1).unwrap(), &expected[..]);
-    assert_eq!(buf.get(2).unwrap(), &expected[..]);
-    assert_eq!(buf.get(3).unwrap(), &expected[..]);
-    assert!(buf.get(4).is_none());
+    assert_eq!(buf.get_channel(0).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(2).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(3).unwrap(), &expected[..]);
+    assert!(buf.get_channel(4).is_none());
 }
 
 #[test]
@@ -27,11 +27,11 @@ fn test_resize_then_channels() {
 
     let expected = vec![0.0; 1024];
 
-    assert_eq!(buf.get(0).unwrap(), &expected[..]);
-    assert_eq!(buf.get(1).unwrap(), &expected[..]);
-    assert_eq!(buf.get(2).unwrap(), &expected[..]);
-    assert_eq!(buf.get(3).unwrap(), &expected[..]);
-    assert!(buf.get(4).is_none());
+    assert_eq!(buf.get_channel(0).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(2).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(3).unwrap(), &expected[..]);
+    assert!(buf.get_channel(4).is_none());
 }
 
 #[test]
@@ -40,11 +40,11 @@ fn test_empty_channels() {
 
     buf.resize_channels(4);
 
-    assert!(buf.get(0).is_some());
-    assert!(buf.get(1).is_some());
-    assert!(buf.get(2).is_some());
-    assert!(buf.get(3).is_some());
-    assert!(buf.get(4).is_none());
+    assert!(buf.get_channel(0).is_some());
+    assert!(buf.get_channel(1).is_some());
+    assert!(buf.get_channel(2).is_some());
+    assert!(buf.get_channel(3).is_some());
+    assert!(buf.get_channel(4).is_none());
 }
 
 #[test]
@@ -52,7 +52,7 @@ fn test_empty() {
     let buf = crate::buf::Dynamic::<f32>::new();
 
     assert_eq!(buf.frames(), 0);
-    assert!(buf.get(0).is_none());
+    assert!(buf.get_channel(0).is_none());
 }
 
 #[test]
@@ -64,11 +64,11 @@ fn test_multiple_resizes() {
 
     let expected = vec![0.0; 1024];
 
-    assert_eq!(buf.get(0).unwrap(), &expected[..]);
-    assert_eq!(buf.get(1).unwrap(), &expected[..]);
-    assert_eq!(buf.get(2).unwrap(), &expected[..]);
-    assert_eq!(buf.get(3).unwrap(), &expected[..]);
-    assert!(buf.get(4).is_none());
+    assert_eq!(buf.get_channel(0).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(2).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(3).unwrap(), &expected[..]);
+    assert!(buf.get_channel(4).is_none());
 }
 
 #[test]
@@ -80,19 +80,19 @@ fn test_multiple_channel_resizes() {
 
     let expected = vec![0.0f32; 1024];
 
-    assert_eq!(buf.get(0).unwrap(), &expected[..]);
-    assert_eq!(buf.get(1).unwrap(), &expected[..]);
-    assert_eq!(buf.get(2).unwrap(), &expected[..]);
-    assert_eq!(buf.get(3).unwrap(), &expected[..]);
-    assert!(buf.get(4).is_none());
+    assert_eq!(buf.get_channel(0).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(2).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(3).unwrap(), &expected[..]);
+    assert!(buf.get_channel(4).is_none());
 
     buf.resize_channels(2);
 
-    assert_eq!(buf.get(0).unwrap(), &expected[..]);
-    assert_eq!(buf.get(1).unwrap(), &expected[..]);
-    assert!(buf.get(2).is_none());
-    assert!(buf.get(3).is_none());
-    assert!(buf.get(4).is_none());
+    assert_eq!(buf.get_channel(0).unwrap(), &expected[..]);
+    assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
+    assert!(buf.get_channel(2).is_none());
+    assert!(buf.get_channel(3).is_none());
+    assert!(buf.get_channel(4).is_none());
 }
 
 #[test]

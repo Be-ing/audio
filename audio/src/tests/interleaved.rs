@@ -167,11 +167,11 @@ fn test_as_interleaved_mut_ptr() {
     test(&mut buf);
 
     assert_eq! {
-        buf.get(0).unwrap().iter().collect::<Vec<_>>(),
+        buf.get_channel(0).unwrap().iter().collect::<Vec<_>>(),
         &[1, 1, 1, 1, 1, 1, 1, 1],
     };
     assert_eq! {
-        buf.get(1).unwrap().iter().collect::<Vec<_>>(),
+        buf.get_channel(1).unwrap().iter().collect::<Vec<_>>(),
         &[1, 1, 1, 1, 1, 1, 1, 1],
     };
 }

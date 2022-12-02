@@ -29,7 +29,7 @@ slice_comparisons!(#[cfg(feature = "std")] {'a, T}, LinearChannelMut<'a, T>, Vec
 /// This doesn't provide direct access to the underlying buffer, but rather
 /// allows us to copy data usinga  number of utility functions.
 ///
-/// See [Buf::get][crate::Buf::get].
+/// See [Buf::get_channel][crate::Buf::get_channel].
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
 pub struct LinearChannel<'a, T> {
@@ -166,7 +166,7 @@ where
 /// This doesn't provide direct access to the underlying buffer, but rather
 /// allows us to copy data usinga  number of utility functions.
 ///
-/// See [Buf::get][crate::Buf::get].
+/// See [Buf::get_channel][crate::Buf::get_channel].
 #[derive(PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LinearChannelMut<'a, T> {
     /// The underlying channel buffer.

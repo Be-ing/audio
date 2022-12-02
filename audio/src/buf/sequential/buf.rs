@@ -438,24 +438,24 @@ impl<T> Sequential<T> {
     ///     }
     /// }
     ///
-    /// assert_eq!(buf.get(0).unwrap(), &expected[..]);
-    /// assert_eq!(buf.get(1).unwrap(), &expected[..]);
-    /// assert_eq!(buf.get(2).unwrap(), &expected[..]);
-    /// assert_eq!(buf.get(3).unwrap(), &expected[..]);
-    /// assert!(buf.get(4).is_none());
+    /// assert_eq!(buf.get_channel(0).unwrap(), &expected[..]);
+    /// assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
+    /// assert_eq!(buf.get_channel(2).unwrap(), &expected[..]);
+    /// assert_eq!(buf.get_channel(3).unwrap(), &expected[..]);
+    /// assert!(buf.get_channel(4).is_none());
     ///
     /// buf.resize_channels(2);
     ///
-    /// assert_eq!(buf.get(0).unwrap(), &expected[..]);
-    /// assert_eq!(buf.get(1).unwrap(), &expected[..]);
-    /// assert!(buf.get(2).is_none());
+    /// assert_eq!(buf.get_channel(0).unwrap(), &expected[..]);
+    /// assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
+    /// assert!(buf.get_channel(2).is_none());
     ///
     /// // shrink
     /// buf.resize(64);
     ///
-    /// assert_eq!(buf.get(0).unwrap(), &expected[..64]);
-    /// assert_eq!(buf.get(1).unwrap(), &expected[..64]);
-    /// assert!(buf.get(2).is_none());
+    /// assert_eq!(buf.get_channel(0).unwrap(), &expected[..64]);
+    /// assert_eq!(buf.get_channel(1).unwrap(), &expected[..64]);
+    /// assert!(buf.get_channel(2).is_none());
     ///
     /// // increase - this causes some weirdness.
     /// buf.resize(128);
@@ -466,11 +466,11 @@ impl<T> Sequential<T> {
     ///     .copied()
     ///     .collect::<Vec<_>>();
     ///
-    /// assert_eq!(buf.get(0).unwrap(), &first_overlapping[..]);
+    /// assert_eq!(buf.get_channel(0).unwrap(), &first_overlapping[..]);
     /// // Note: second channel matches perfectly up with an old channel that was
     /// // masked out.
-    /// assert_eq!(buf.get(1).unwrap(), &expected[..]);
-    /// assert!(buf.get(2).is_none());
+    /// assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
+    /// assert!(buf.get_channel(2).is_none());
     /// ```
     pub fn resize(&mut self, frames: usize)
     where
@@ -491,13 +491,13 @@ impl<T> Sequential<T> {
     ///
     /// let expected = vec![0.0; 256];
     ///
-    /// assert_eq!(buf.get(0).unwrap(), &expected[..]);
-    /// assert_eq!(buf.get(1).unwrap(), &expected[..]);
-    /// assert_eq!(buf.get(2).unwrap(), &expected[..]);
-    /// assert_eq!(buf.get(3).unwrap(), &expected[..]);
-    /// assert!(buf.get(4).is_none());
+    /// assert_eq!(buf.get_channel(0).unwrap(), &expected[..]);
+    /// assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
+    /// assert_eq!(buf.get_channel(2).unwrap(), &expected[..]);
+    /// assert_eq!(buf.get_channel(3).unwrap(), &expected[..]);
+    /// assert!(buf.get_channel(4).is_none());
     /// ```
-    pub fn get(&self, channel: usize) -> Option<LinearChannel<'_, T>> {
+    pub fn get_channel(&self, channel: usize) -> Option<LinearChannel<'_, T>> {
         if channel >= self.channels {
             return None;
         }
@@ -690,7 +690,7 @@ impl<T> ops::Index<usize> for Sequential<T> {
     type Output = [T];
 
     fn index(&self, index: usize) -> &Self::Output {
-        match self.get(index) {
+        match self.get_channel(index) {
             Some(slice) => slice.into_ref(),
             None => panic!("index `{}` is not a channel", index),
         }
@@ -737,11 +737,11 @@ where
         (*self).channels()
     }
 
-    fn get(&self, channel: usize) -> Option<Self::Channel<'_>> {
-        (*self).get(channel)
+    fn get_channel(&self, channel: usize) -> Option<Self::Channel<'_>> {
+        (*self).get_channel(channel)
     }
 
-    fn iter(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::Iter<'_> {
         (*self).iter()
     }
 }
@@ -804,7 +804,7 @@ where
     where
         Self: 'this;
 
-    fn get_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
+    fn get_channel_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
         (*self).get_mut(channel)
     }
 
@@ -822,7 +822,7 @@ where
         }
     }
 
-    fn iter_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
         (*self).iter_mut()
     }
 }

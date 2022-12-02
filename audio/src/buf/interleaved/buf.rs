@@ -265,12 +265,12 @@ impl<T> Interleaved<T> {
     /// buf.as_slice_mut().copy_from_slice(&[1, 1, 2, 2, 3, 3, 4, 4]);
     ///
     /// assert_eq! {
-    ///     buf.get(0).unwrap(),
+    ///     buf.get_channel(0).unwrap(),
     ///     [1u32, 2, 3, 4],
     /// };
     ///
     /// assert_eq! {
-    ///     buf.get(1).unwrap(),
+    ///     buf.get_channel(1).unwrap(),
     ///     [1u32, 2, 3, 4],
     /// };
     ///
@@ -428,10 +428,10 @@ impl<T> Interleaved<T> {
     ///     *c = *s;
     /// }
     ///
-    /// assert_eq!(buf.get(0).unwrap().iter().nth(2), Some(3.0));
-    /// assert_eq!(buf.get(1).unwrap().iter().nth(2), Some(7.0));
+    /// assert_eq!(buf.get_channel(0).unwrap().iter().nth(2), Some(3.0));
+    /// assert_eq!(buf.get_channel(1).unwrap().iter().nth(2), Some(7.0));
     /// ```
-    pub fn get(&self, channel: usize) -> Option<InterleavedChannel<'_, T>> {
+    pub fn get_channel(&self, channel: usize) -> Option<InterleavedChannel<'_, T>> {
         if channel < self.channels {
             unsafe {
                 let ptr = ptr::NonNull::new_unchecked(self.data.as_ptr() as *mut _);
@@ -463,7 +463,7 @@ impl<T> Interleaved<T> {
     where
         T: Copy,
     {
-        self.get(channel)?.get(frame)
+        self.get_channel(channel)?.get(frame)
     }
 
     /// Get a mutable reference to a channel.
@@ -756,12 +756,12 @@ where
     }
 
     #[inline]
-    fn get(&self, channel: usize) -> Option<Self::Channel<'_>> {
+    fn get_channel(&self, channel: usize) -> Option<Self::Channel<'_>> {
         InterleavedChannel::from_slice(&self.data, channel, self.channels)
     }
 
     #[inline]
-    fn iter(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::Iter<'_> {
         (*self).iter()
     }
 }
@@ -827,7 +827,7 @@ where
         Self::Sample: 'this;
 
     #[inline]
-    fn get_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
+    fn get_channel_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
         InterleavedChannelMut::from_slice(&mut self.data, channel, self.channels)
     }
 
@@ -846,7 +846,7 @@ where
     }
 
     #[inline]
-    fn iter_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
         (*self).iter_mut()
     }
 }
