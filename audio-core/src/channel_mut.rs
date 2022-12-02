@@ -5,7 +5,7 @@ use crate::Channel;
 /// This doesn't provide direct access to the underlying buffer, but rather
 /// allows us to copy data usinga  number of utility functions.
 ///
-/// See [BufMut::get_mut][crate::BufMut::get_mut].
+/// See [BufMut::get_channel_mut][crate::BufMut::get_channel_mut].
 pub trait ChannelMut: Channel {
     /// A reborrowed mutable channel.
     type ChannelMut<'this>: ChannelMut<Sample = Self::Sample>
@@ -31,7 +31,7 @@ pub trait ChannelMut: Channel {
     /// use audio::{BufMut, ChannelMut};
     ///
     /// fn test(mut buf: impl BufMut<Sample = i16>) {
-    ///     for mut chan in buf.iter_mut() {
+    ///     for mut chan in buf.iter_channels_mut() {
     ///         if let Some(f) = chan.get_mut(2) {
     ///             *f = 1;
     ///         }
@@ -54,7 +54,7 @@ pub trait ChannelMut: Channel {
     /// use audio::{BufMut, Channel, ChannelMut};
     ///
     /// fn test(buf: &mut impl BufMut<Sample = f32>) {
-    ///     let is_linear = if let Some(linear) = buf.get_mut(0).unwrap().try_as_linear_mut() {
+    ///     let is_linear = if let Some(linear) = buf.get_channel_mut(0).unwrap().try_as_linear_mut() {
     ///         linear[2] = 1.0;
     ///         true
     ///     } else {
@@ -62,7 +62,7 @@ pub trait ChannelMut: Channel {
     ///     };
     ///
     ///     if is_linear {
-    ///         assert_eq!(buf.get(0).and_then(|c| c.get(2)), Some(1.0));
+    ///         assert_eq!(buf.get_channel(0).and_then(|c| c.get(2)), Some(1.0));
     ///     }
     /// }
     ///
@@ -80,11 +80,11 @@ pub trait ChannelMut: Channel {
     /// use audio::ChannelMut;
     ///
     /// let mut buf = audio::sequential![[0; 2]; 2];
-    /// for mut channel in buf.iter_mut() {
+    /// for mut channel in buf.iter_channels_mut() {
     ///     channel.fill(1);
     /// }
-    /// assert_eq!(buf.get(0).unwrap().as_ref(), &[1, 1]);
-    /// assert_eq!(buf.get(1).unwrap().as_ref(), &[1, 1]);
+    /// assert_eq!(buf.get_channel(0).unwrap().as_ref(), &[1, 1]);
+    /// assert_eq!(buf.get_channel(1).unwrap().as_ref(), &[1, 1]);
     /// ```
     fn fill(&mut self, value: Self::Sample) {
         for sample in self.iter_mut() {

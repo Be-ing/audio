@@ -116,12 +116,12 @@ where
     }
 
     #[inline]
-    fn get(&self, channel: usize) -> Option<Self::Channel<'_>> {
+    fn get_channel(&self, channel: usize) -> Option<Self::Channel<'_>> {
         InterleavedChannel::from_slice(self.value.as_ref(), channel, self.channels)
     }
 
     #[inline]
-    fn iter(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::Iter<'_> {
         (*self).iter()
     }
 }
@@ -208,7 +208,7 @@ where
         Self: 'this;
 
     #[inline]
-    fn get_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
+    fn get_channel_mut(&mut self, channel: usize) -> Option<Self::ChannelMut<'_>> {
         InterleavedChannelMut::from_slice(self.value.as_mut(), channel, self.channels)
     }
 
@@ -231,7 +231,7 @@ where
     }
 
     #[inline]
-    fn iter_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
         (*self).iter_mut()
     }
 }

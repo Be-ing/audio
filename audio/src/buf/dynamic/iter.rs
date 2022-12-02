@@ -37,7 +37,7 @@ macro_rules! forward {
 
 /// An iterator over the channels in the buffer.
 ///
-/// Created with [Dynamic::iter][crate::buf::Dynamic::iter].
+/// Created with [Dynamic::iter_channels][crate::buf::Dynamic::iter_channels].
 pub struct Iter<'a, T> {
     iter: slice::Iter<'a, RawSlice<T>>,
     len: usize,
@@ -86,7 +86,7 @@ impl<'a, T> ExactSizeIterator for Iter<'a, T> {
 
 /// A mutable iterator over the channels in the buffer.
 ///
-/// Created with [Dynamic::iter_mut][crate::buf::Dynamic::iter_mut].
+/// Created with [Dynamic::iter_channels_mut][crate::buf::Dynamic::iter_channels_mut].
 pub struct IterMut<'a, T> {
     iter: slice::IterMut<'a, RawSlice<T>>,
     len: usize,

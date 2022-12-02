@@ -34,7 +34,7 @@ macro_rules! forward {
 
 /// An iterator over the channels in the buffer.
 ///
-/// Created with [Sequential::iter][super::Sequential::iter].
+/// Created with [Sequential::iter_channels][super::Sequential::iter_channels].
 pub struct Iter<'a, T> {
     iter: slice::ChunksExact<'a, T>,
 }
@@ -74,7 +74,7 @@ impl<'a, T> ExactSizeIterator for Iter<'a, T> {
 
 /// A mutable iterator over the channels in the buffer.
 ///
-/// Created with [Sequential::iter_mut][super::Sequential::iter_mut].
+/// Created with [Sequential::iter_channels_mut][super::Sequential::iter_channels_mut].
 pub struct IterMut<'a, T> {
     iter: slice::ChunksExactMut<'a, T>,
 }
