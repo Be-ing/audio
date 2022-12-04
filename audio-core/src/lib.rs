@@ -19,7 +19,7 @@ pub mod buf;
 pub use self::buf::Buf;
 
 mod buf_mut;
-pub use self::buf_mut::BufMut;
+pub use self::buf_mut::{BufMut, BufMutCopyableSamples};
 
 mod channel;
 pub use self::channel::Channel;

@@ -91,6 +91,18 @@ pub trait BufMut: Buf {
         Self::Sample: Copy;
 }
 
+/// Utility functions for mutable buffers where the Sample type implements Copy.
+pub trait BufMutCopyableSamples: BufMut where
+    <Self as Buf>::Sample: Copy
+{
+    /// Fill the entire buffer with the specified value
+    fn fill(&mut self, value: Self::Sample) {
+        for mut channel in self.iter_channels_mut() {
+            channel.fill(value);
+        }
+    }
+}
+
 impl<B> BufMut for &mut B
 where
     B: ?Sized + BufMut,

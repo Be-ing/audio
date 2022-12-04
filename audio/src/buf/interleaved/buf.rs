@@ -4,7 +4,7 @@ use std::hash;
 use std::ptr;
 
 use audio_core::{
-    Buf, BufMut, ExactSizeBuf, InterleavedBuf, InterleavedBufMut, ResizableBuf, Sample, UniformBuf,
+    Buf, BufMut, BufMutCopyableSamples, ExactSizeBuf, InterleavedBuf, InterleavedBufMut, ResizableBuf, Sample, UniformBuf,
 };
 
 use crate::buf::interleaved::{Iter, IterMut};
@@ -849,6 +849,15 @@ where
     fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
         (*self).iter_mut()
     }
+
+}
+
+impl<T> BufMutCopyableSamples for Interleaved<T>
+    where T: Copy
+{
+    fn fill(&mut self, value: Self::Sample) {
+        self.data.fill(value);
+    }
 }
 
 impl<'a, T> IntoIterator for &'a Interleaved<T>
@@ -895,4 +904,12 @@ where
         self.channels = channels;
         self.frames = frames;
     }
+}
+
+
+#[test]
+fn fill() {
+    let mut buf = Interleaved::<f32>::with_topology(2, 2);
+    buf.fill(0.5);
+    assert_eq!(buf.as_slice(), [0.5, 0.5, 0.5, 0.5]);
 }

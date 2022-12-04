@@ -4,7 +4,7 @@ use core::hash;
 use core::ops;
 use core::ptr;
 
-use audio_core::{Buf, BufMut, ExactSizeBuf, ResizableBuf, Sample, UniformBuf};
+use audio_core::{Buf, BufMut, BufMutCopyableSamples, ExactSizeBuf, ResizableBuf, Sample, UniformBuf};
 
 use crate::buf::sequential::{Iter, IterMut};
 use crate::channel::{LinearChannel, LinearChannelMut};
@@ -850,5 +850,13 @@ where
 
     fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
         (*self).iter_mut()
+    }
+}
+
+impl<T> BufMutCopyableSamples for Sequential<T>
+    where T: Copy
+{
+    fn fill(&mut self, value: Self::Sample) {
+        self.data.fill(value);
     }
 }
