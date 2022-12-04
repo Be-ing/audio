@@ -71,4 +71,11 @@ pub trait ChannelMut: Channel {
     /// test(&mut audio::interleaved![[0.0; 8]; 2]);
     /// ```
     fn try_as_linear_mut(&mut self) -> Option<&mut [Self::Sample]>;
+
+    /// Replace all samples in the channel with the specified value
+    fn fill(&mut self, value: Self::Sample) {
+        for sample in self.iter_mut() {
+            *sample = value;
+        }
+    }
 }
