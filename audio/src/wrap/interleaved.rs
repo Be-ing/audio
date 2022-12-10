@@ -280,7 +280,7 @@ where
         capacity <= self.value.len()
     }
 
-    fn resize(&mut self, frames: usize) {
+    fn resize_frames(&mut self, frames: usize) {
         if frames > self.value.len() {
             panic!(
                 "required number of frames {new_len} is larger than the wrapped buffer {len}",

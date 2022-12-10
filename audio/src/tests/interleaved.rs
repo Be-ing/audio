@@ -111,7 +111,7 @@ fn test_resize() {
     assert_eq!(buf.frames(), 0);
 
     buf.resize_channels(4);
-    buf.resize(256);
+    buf.resize_frames(256);
 
     assert_eq!(buf.channels(), 4);
     assert_eq!(buf.frames(), 256);
@@ -124,16 +124,16 @@ fn test_resize() {
         assert_eq!(chan.get(127), Some(42.0));
     }
 
-    buf.resize(128);
+    buf.resize_frames(128);
     assert_eq!(buf.sample(1, 127), Some(42.0));
 
-    buf.resize(256);
+    buf.resize_frames(256);
     assert_eq!(buf.sample(1, 127), Some(42.0));
 
     buf.resize_channels(2);
     assert_eq!(buf.sample(1, 127), Some(42.0));
 
-    buf.resize(64);
+    buf.resize_frames(64);
     assert_eq!(buf.sample(1, 127), None);
 }
 

@@ -30,12 +30,12 @@ use crate::frame::{RawSequential, SequentialFrame, SequentialFramesIter};
 /// buf[0].copy_from_slice(&[1.0, 2.0, 3.0, 4.0]);
 /// buf[1].copy_from_slice(&[2.0, 3.0, 4.0, 5.0]);
 ///
-/// buf.resize(3);
+/// buf.resize_frames(3);
 ///
 /// assert_eq!(&buf[0], &[1.0, 2.0, 3.0]);
 /// assert_eq!(&buf[1], &[2.0, 3.0, 4.0]);
 ///
-/// buf.resize(4);
+/// buf.resize_frames(4);
 ///
 /// assert_eq!(&buf[0], &[1.0, 2.0, 3.0, 2.0]); // <- 2.0 is stale data.
 /// assert_eq!(&buf[1], &[2.0, 3.0, 4.0, 5.0]); // <- 5.0 is stale data.
@@ -49,7 +49,7 @@ use crate::frame::{RawSequential, SequentialFrame, SequentialFramesIter};
 /// buf[0].copy_from_slice(&[1.0, 2.0, 3.0, 4.0]);
 /// buf[1].copy_from_slice(&[2.0, 3.0, 4.0, 5.0]);
 ///
-/// buf.resize(3);
+/// buf.resize_frames(3);
 ///
 /// assert_eq!(buf.as_slice(), &[1.0, 2.0, 3.0, 2.0, 3.0, 4.0]);
 /// ```
@@ -228,7 +228,7 @@ impl<T> Sequential<T> {
     /// buf[0].copy_from_slice(&[1.0, 2.0, 3.0, 4.0]);
     /// buf[1].copy_from_slice(&[2.0, 3.0, 4.0, 5.0]);
     ///
-    /// buf.resize(3);
+    /// buf.resize_frames(3);
     ///
     /// assert_eq!(buf.into_vec(), vec![1.0, 2.0, 3.0, 2.0, 3.0, 4.0])
     /// ```
@@ -246,7 +246,7 @@ impl<T> Sequential<T> {
     /// buf[0].copy_from_slice(&[1.0, 2.0, 3.0, 4.0]);
     /// buf[1].copy_from_slice(&[2.0, 3.0, 4.0, 5.0]);
     ///
-    /// buf.resize(3);
+    /// buf.resize_frames(3);
     ///
     /// assert_eq!(buf.as_slice(), &[1.0, 2.0, 3.0, 2.0, 3.0, 4.0])
     /// ```
@@ -292,16 +292,16 @@ impl<T> Sequential<T> {
     ///
     /// assert_eq!(buf.capacity(), 0);
     ///
-    /// buf.resize(11);
+    /// buf.resize_frames(11);
     /// assert_eq!(buf.capacity(), 0);
     ///
     /// buf.resize_channels(2);
     /// assert_eq!(buf.capacity(), 22);
     ///
-    /// buf.resize(12);
+    /// buf.resize_frames(12);
     /// assert_eq!(buf.capacity(), 44);
     ///
-    /// buf.resize(24);
+    /// buf.resize_frames(24);
     /// assert_eq!(buf.capacity(), 44);
     /// ```
     pub fn capacity(&self) -> usize {
@@ -316,7 +316,7 @@ impl<T> Sequential<T> {
     /// let mut buf = audio::buf::Sequential::<f32>::new();
     ///
     /// assert_eq!(buf.frames(), 0);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     /// assert_eq!(buf.frames(), 256);
     /// ```
     pub fn frames(&self) -> usize {
@@ -390,7 +390,7 @@ impl<T> Sequential<T> {
     /// assert_eq!(buf.frames(), 0);
     ///
     /// buf.resize_channels(4);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// assert_eq!(buf.channels(), 4);
     /// assert_eq!(buf.frames(), 256);
@@ -418,7 +418,7 @@ impl<T> Sequential<T> {
     /// assert_eq!(buf.frames(), 0);
     ///
     /// buf.resize_channels(4);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// assert_eq!(buf[1][128], 0.0);
     /// buf[1][128] = 42.0;
@@ -434,10 +434,10 @@ impl<T> Sequential<T> {
     /// assert_eq!(buf[1][128], 0.0);
     /// buf[1][128] = 42.0;
     ///
-    /// buf.resize(64);
+    /// buf.resize_frames(64);
     /// assert!(buf[1].get(128).is_none());
     ///
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     /// assert_eq!(buf[1][128], 0.0);
     /// ```
     ///
@@ -454,7 +454,7 @@ impl<T> Sequential<T> {
     /// let mut buf = audio::buf::Sequential::<f32>::new();
     ///
     /// buf.resize_channels(4);
-    /// buf.resize(128);
+    /// buf.resize_frames(128);
     ///
     /// let expected = (0..128).map(|v| v as f32).collect::<Vec<_>>();
     ///
@@ -477,14 +477,14 @@ impl<T> Sequential<T> {
     /// assert!(buf.get_channel(2).is_none());
     ///
     /// // shrink
-    /// buf.resize(64);
+    /// buf.resize_frames(64);
     ///
     /// assert_eq!(buf.get_channel(0).unwrap(), &expected[..64]);
     /// assert_eq!(buf.get_channel(1).unwrap(), &expected[..64]);
     /// assert!(buf.get_channel(2).is_none());
     ///
     /// // increase - this causes some weirdness.
-    /// buf.resize(128);
+    /// buf.resize_frames(128);
     ///
     /// let first_overlapping = expected[..64]
     ///     .iter()
@@ -498,7 +498,7 @@ impl<T> Sequential<T> {
     /// assert_eq!(buf.get_channel(1).unwrap(), &expected[..]);
     /// assert!(buf.get_channel(2).is_none());
     /// ```
-    pub fn resize(&mut self, frames: usize)
+    pub fn resize_frames(&mut self, frames: usize)
     where
         T: Sample,
     {
@@ -513,7 +513,7 @@ impl<T> Sequential<T> {
     /// let mut buf = audio::buf::Sequential::<f32>::new();
     ///
     /// buf.resize_channels(4);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// let expected = vec![0.0; 256];
     ///
@@ -542,7 +542,7 @@ impl<T> Sequential<T> {
     /// let mut buf = audio::buf::Sequential::<f32>::new();
     ///
     /// buf.resize_channels(2);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// let mut rng = rand::thread_rng();
     ///
@@ -808,12 +808,12 @@ where
         true
     }
 
-    fn resize(&mut self, frames: usize) {
-        Self::resize(self, frames);
+    fn resize_frames(&mut self, frames: usize) {
+        Self::resize_frames(self, frames);
     }
 
     fn resize_topology(&mut self, channels: usize, frames: usize) {
-        Self::resize(self, frames);
+        Self::resize_frames(self, frames);
         Self::resize_channels(self, channels);
     }
 }

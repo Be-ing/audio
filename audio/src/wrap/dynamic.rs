@@ -176,7 +176,7 @@ where
     }
 
     #[inline]
-    fn resize(&mut self, frames: usize) {
+    fn resize_frames(&mut self, frames: usize) {
         for buf in self.value.iter_mut() {
             buf.resize(frames, T::ZERO);
         }

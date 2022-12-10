@@ -7,7 +7,7 @@ fn test_channels_then_resize() {
     let mut buf = crate::buf::Sequential::<f32>::new();
 
     buf.resize_channels(4);
-    buf.resize(128);
+    buf.resize_frames(128);
 
     let expected = vec![0.0; 128];
 
@@ -22,7 +22,7 @@ fn test_channels_then_resize() {
 fn test_resize_then_channels() {
     let mut buf = crate::buf::Sequential::<f32>::new();
 
-    buf.resize(128);
+    buf.resize_frames(128);
     buf.resize_channels(4);
 
     let expected = vec![0.0; 128];
@@ -60,7 +60,7 @@ fn test_multiple_resizes() {
     let mut buf = crate::buf::Sequential::<f32>::new();
 
     buf.resize_channels(4);
-    buf.resize(128);
+    buf.resize_frames(128);
 
     let expected = vec![0.0; 128];
 
@@ -77,12 +77,12 @@ fn test_unaligned_resize() {
     buf[0].copy_from_slice(&[1.0, 2.0, 3.0, 4.0]);
     buf[1].copy_from_slice(&[2.0, 3.0, 4.0, 5.0]);
 
-    buf.resize(3);
+    buf.resize_frames(3);
 
     assert_eq!(&buf[0], &[1.0, 2.0, 3.0]);
     assert_eq!(&buf[1], &[2.0, 3.0, 4.0]);
 
-    buf.resize(4);
+    buf.resize_frames(4);
 
     assert_eq!(&buf[0], &[1.0, 2.0, 3.0, 2.0]); // <- 2.0 is stale data.
     assert_eq!(&buf[1], &[2.0, 3.0, 4.0, 5.0]); // <- 5.0 is stale data.
@@ -93,7 +93,7 @@ fn test_multiple_channel_resizes() {
     let mut buf = crate::buf::Sequential::<f32>::new();
 
     buf.resize_channels(4);
-    buf.resize(128);
+    buf.resize_frames(128);
 
     let expected = (0..128).map(|v| v as f32).collect::<Vec<_>>();
 
@@ -116,14 +116,14 @@ fn test_multiple_channel_resizes() {
     assert!(buf.get_channel(2).is_none());
 
     // shrink
-    buf.resize(64);
+    buf.resize_frames(64);
 
     assert_eq!(buf.get_channel(0).unwrap(), &expected[..64]);
     assert_eq!(buf.get_channel(1).unwrap(), &expected[..64]);
     assert!(buf.get_channel(2).is_none());
 
     // increase - this causes some weirdness.
-    buf.resize(128);
+    buf.resize_frames(128);
 
     let first_overlapping = expected[..64]
         .iter()
@@ -143,7 +143,7 @@ fn test_drop_empty() {
     let mut buf = crate::buf::Sequential::<f32>::new();
 
     assert_eq!(buf.frames(), 0);
-    buf.resize(128);
+    buf.resize_frames(128);
     assert_eq!(buf.frames(), 128);
 }
 
@@ -153,10 +153,10 @@ fn test_stale_allocation() {
     assert_eq!(buf[1][128], 0.0);
     buf[1][128] = 42.0;
 
-    buf.resize(64);
+    buf.resize_frames(64);
     assert!(buf[1].get(128).is_none());
 
-    buf.resize(256);
+    buf.resize_frames(256);
     assert_eq!(buf[1][128], 0.0);
 }
 

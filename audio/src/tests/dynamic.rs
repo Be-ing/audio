@@ -7,7 +7,7 @@ fn test_channels_then_resize() {
     let mut buf = crate::buf::Dynamic::<f32>::new();
 
     buf.resize_channels(4);
-    buf.resize(1024);
+    buf.resize_frames(1024);
 
     let expected = vec![0.0; 1024];
 
@@ -22,7 +22,7 @@ fn test_channels_then_resize() {
 fn test_resize_then_channels() {
     let mut buf = crate::buf::Dynamic::<f32>::new();
 
-    buf.resize(1024);
+    buf.resize_frames(1024);
     buf.resize_channels(4);
 
     let expected = vec![0.0; 1024];
@@ -60,7 +60,7 @@ fn test_multiple_resizes() {
     let mut buf = crate::buf::Dynamic::<f32>::new();
 
     buf.resize_channels(4);
-    buf.resize(1024);
+    buf.resize_frames(1024);
 
     let expected = vec![0.0; 1024];
 
@@ -76,7 +76,7 @@ fn test_multiple_channel_resizes() {
     let mut buf = crate::buf::Dynamic::<f32>::new();
 
     buf.resize_channels(4);
-    buf.resize(1024);
+    buf.resize_frames(1024);
 
     let expected = vec![0.0f32; 1024];
 
@@ -100,7 +100,7 @@ fn test_drop_empty() {
     let mut buf = crate::buf::Dynamic::<f32>::new();
 
     assert_eq!(buf.frames(), 0);
-    buf.resize(1024);
+    buf.resize_frames(1024);
     assert_eq!(buf.frames(), 1024);
 }
 
@@ -108,7 +108,7 @@ fn test_drop_empty() {
 fn test_into_vecs() {
     let mut buf = crate::buf::Dynamic::<f32>::new();
     buf.resize_channels(4);
-    buf.resize(512);
+    buf.resize_frames(512);
 
     let expected = vec![0.0; 512];
 
@@ -148,10 +148,10 @@ fn test_stale_allocation() {
     assert_eq!(buf[1][128], 0.0);
     buf[1][128] = 42.0;
 
-    buf.resize(64);
+    buf.resize_frames(64);
     assert!(buf[1].get(128).is_none());
 
-    buf.resize(256);
+    buf.resize_frames(256);
     assert_eq!(buf[1][128], 42.0);
 }
 
@@ -167,7 +167,7 @@ fn test_get_mut() {
     let mut buf = crate::buf::Dynamic::<f32>::new();
 
     buf.resize_channels(2);
-    buf.resize(256);
+    buf.resize_frames(256);
 
     let mut rng = rand::thread_rng();
 
@@ -184,7 +184,7 @@ fn test_get_mut() {
 fn test_get_or_default() {
     let mut buf = crate::buf::Dynamic::<f32>::new();
 
-    buf.resize(256);
+    buf.resize_frames(256);
 
     let expected = vec![0f32; 256];
 
@@ -198,6 +198,6 @@ fn test_get_or_default() {
 fn test_resize_topology() {
     let mut buf = crate::buf::Dynamic::<f64>::with_topology(1, 1024);
 
-    buf.resize(20480);
+    buf.resize_frames(20480);
     buf.resize_channels(1);
 }

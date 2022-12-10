@@ -234,7 +234,7 @@ impl<T> Interleaved<T> {
     ///     *c = *s;
     /// }
     ///
-    /// buf.resize(3);
+    /// buf.resize_frames(3);
     ///
     /// assert_eq!(buf.into_vec(), vec![1.0, 1.0, 2.0, 2.0, 3.0, 3.0])
     /// ```
@@ -292,16 +292,16 @@ impl<T> Interleaved<T> {
     ///
     /// assert_eq!(buf.capacity(), 0);
     ///
-    /// buf.resize(11);
+    /// buf.resize_frames(11);
     /// assert_eq!(buf.capacity(), 0);
     ///
     /// buf.resize_channels(2);
     /// assert_eq!(buf.capacity(), 22);
     ///
-    /// buf.resize(12);
+    /// buf.resize_frames(12);
     /// assert_eq!(buf.capacity(), 44);
     ///
-    /// buf.resize(24);
+    /// buf.resize_frames(24);
     /// assert_eq!(buf.capacity(), 44);
     /// ```
     pub fn capacity(&self) -> usize {
@@ -316,7 +316,7 @@ impl<T> Interleaved<T> {
     /// let mut buf = audio::buf::Interleaved::<f32>::new();
     ///
     /// assert_eq!(buf.frames(), 0);
-    /// buf.resize(4);
+    /// buf.resize_frames(4);
     /// assert_eq!(buf.frames(), 4);
     /// ```
     pub fn frames(&self) -> usize {
@@ -353,7 +353,7 @@ impl<T> Interleaved<T> {
     /// assert_eq!(buf.frames(), 0);
     ///
     /// buf.resize_channels(4);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// assert_eq!(buf.channels(), 4);
     /// assert_eq!(buf.frames(), 256);
@@ -381,7 +381,7 @@ impl<T> Interleaved<T> {
     /// assert_eq!(buf.frames(), 0);
     ///
     /// buf.resize_channels(4);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// assert_eq!(buf.channels(), 4);
     /// assert_eq!(buf.frames(), 256);
@@ -394,19 +394,19 @@ impl<T> Interleaved<T> {
     ///     assert_eq!(chan.get(127), Some(42.0));
     /// }
     ///
-    /// buf.resize(128);
+    /// buf.resize_frames(128);
     /// assert_eq!(buf.sample(1, 127), Some(42.0));
     ///
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     /// assert_eq!(buf.sample(1, 127), Some(42.0));
     ///
     /// buf.resize_channels(2);
     /// assert_eq!(buf.sample(1, 127), Some(42.0));
     ///
-    /// buf.resize(64);
+    /// buf.resize_frames(64);
     /// assert_eq!(buf.sample(1, 127), None);
     /// ```
-    pub fn resize(&mut self, frames: usize)
+    pub fn resize_frames(&mut self, frames: usize)
     where
         T: Sample,
     {
@@ -804,8 +804,8 @@ where
     }
 
     #[inline]
-    fn resize(&mut self, frames: usize) {
-        (*self).resize(frames);
+    fn resize_frames(&mut self, frames: usize) {
+        (*self).resize_frames(frames);
     }
 
     #[inline]

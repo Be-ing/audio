@@ -26,7 +26,7 @@ pub use self::iter::{IterChannels, IterChannelsMut};
 /// [growing and shrinking][std::alloc::Allocator] of a memory region.
 ///
 /// This kind of buffer is a good choice if you need to
-/// [resize][Dynamic::resize] frequently.
+/// [resize_frames][Dynamic::resize_frames] frequently.
 pub struct Dynamic<T> {
     /// The stored data for each channel.
     data: RawSlice<RawSlice<T>>,
@@ -203,7 +203,7 @@ impl<T> Dynamic<T> {
     /// let mut buf = audio::buf::Dynamic::<f32>::new();
     ///
     /// assert_eq!(buf.frames(), 0);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     /// assert_eq!(buf.frames(), 256);
     /// ```
     pub fn frames(&self) -> usize {
@@ -280,7 +280,7 @@ impl<T> Dynamic<T> {
     /// assert_eq!(buf.frames(), 0);
     ///
     /// buf.resize_channels(4);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// assert_eq!(buf[1][128], 0.0);
     /// buf[1][128] = 42.0;
@@ -297,13 +297,13 @@ impl<T> Dynamic<T> {
     /// assert_eq!(buf[1][128], 0.0);
     /// buf[1][128] = 42.0;
     ///
-    /// buf.resize(64);
+    /// buf.resize_frames(64);
     /// assert!(buf[1].get(128).is_none());
     ///
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     /// assert_eq!(buf[1][128], 42.0);
     /// ```
-    pub fn resize(&mut self, frames: usize)
+    pub fn resize_frames(&mut self, frames: usize)
     where
         T: Sample,
     {
@@ -346,7 +346,7 @@ impl<T> Dynamic<T> {
     /// assert_eq!(buf.frames(), 0);
     ///
     /// buf.resize_channels(4);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// assert_eq!(buf.channels(), 4);
     /// assert_eq!(buf.frames(), 256);
@@ -395,7 +395,7 @@ impl<T> Dynamic<T> {
     /// let mut buf = audio::buf::Dynamic::<f32>::new();
     ///
     /// buf.resize_channels(4);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// let expected = vec![0.0; 256];
     ///
@@ -423,7 +423,7 @@ impl<T> Dynamic<T> {
     /// ```
     /// let mut buf = audio::buf::Dynamic::<f32>::new();
     ///
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// let expected = vec![0f32; 256];
     ///
@@ -453,7 +453,7 @@ impl<T> Dynamic<T> {
     /// let mut buf = audio::buf::Dynamic::<f32>::new();
     ///
     /// buf.resize_channels(2);
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// let mut rng = rand::thread_rng();
     ///
@@ -487,7 +487,7 @@ impl<T> Dynamic<T> {
     ///
     /// let mut buf = audio::buf::Dynamic::<f32>::new();
     ///
-    /// buf.resize(256);
+    /// buf.resize_frames(256);
     ///
     /// let mut rng = rand::thread_rng();
     ///
@@ -518,7 +518,7 @@ impl<T> Dynamic<T> {
     /// ```
     /// let mut buf = audio::buf::Dynamic::<f32>::new();
     /// buf.resize_channels(4);
-    /// buf.resize(512);
+    /// buf.resize_frames(512);
     ///
     /// let expected = vec![0.0; 512];
     ///
@@ -547,7 +547,7 @@ impl<T> Dynamic<T> {
     /// ```
     /// let mut buf = audio::buf::Dynamic::<f32>::new();
     /// buf.resize_channels(4);
-    /// buf.resize(512);
+    /// buf.resize_frames(512);
     ///
     /// let expected = vec![0.0; 512];
     ///
@@ -782,12 +782,12 @@ where
         false
     }
 
-    fn resize(&mut self, frames: usize) {
-        Self::resize(self, frames);
+    fn resize_frames(&mut self, frames: usize) {
+        Self::resize_frames(self, frames);
     }
 
     fn resize_topology(&mut self, channels: usize, frames: usize) {
-        Self::resize(self, frames);
+        Self::resize_frames(self, frames);
         Self::resize_channels(self, channels);
     }
 }
