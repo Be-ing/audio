@@ -780,7 +780,7 @@ where
     where
         Self: 'this;
 
-    type FramesIter<'this> = SequentialFramesIter<'this, T>
+    type IterFrames<'this> = SequentialFramesIter<'this, T>
     where
         Self: 'this;
 
@@ -794,7 +794,7 @@ where
     }
 
     #[inline]
-    fn iter_frames(&self) -> Self::FramesIter<'_> {
+    fn iter_frames(&self) -> Self::IterFrames<'_> {
         SequentialFramesIter::new(0, self.as_raw())
     }
 }

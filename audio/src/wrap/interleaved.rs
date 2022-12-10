@@ -134,7 +134,7 @@ where
     where
         Self: 'this;
 
-    type FramesIter<'this> = InterleavedFramesIter<'this, T::Item>
+    type IterFrames<'this> = InterleavedFramesIter<'this, T::Item>
     where
         Self: 'this;
 
@@ -148,7 +148,7 @@ where
     }
 
     #[inline]
-    fn iter_frames(&self) -> Self::FramesIter<'_> {
+    fn iter_frames(&self) -> Self::IterFrames<'_> {
         InterleavedFramesIter::new(0, self.as_raw())
     }
 }
