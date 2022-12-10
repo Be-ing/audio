@@ -6,7 +6,7 @@ use audio_core::{
     UniformBuf, WriteBuf,
 };
 
-use crate::buf::interleaved::{Iter, IterMut};
+use crate::buf::interleaved::{IterChannels, IterChannelsMut};
 use crate::channel::{InterleavedChannel, InterleavedChannelMut};
 use crate::frame::{InterleavedFrame, InterleavedFramesIter, RawInterleaved};
 use crate::slice::{Slice, SliceIndex, SliceMut};
@@ -65,8 +65,8 @@ where
     /// assert_eq!(it.next().unwrap(), [2, 4]);
     /// ```
     #[inline]
-    pub fn iter(&self) -> Iter<'_, T::Item> {
-        unsafe { Iter::new_unchecked(self.value.as_ptr(), self.value.len(), self.channels) }
+    pub fn iter(&self) -> IterChannels<'_, T::Item> {
+        unsafe { IterChannels::new_unchecked(self.value.as_ptr(), self.value.len(), self.channels) }
     }
 
     /// Access the raw sequential buffer.
@@ -86,8 +86,8 @@ where
 {
     /// Construct an iterator over the interleaved wrapper.
     #[inline]
-    pub fn iter_mut(&mut self) -> IterMut<'_, T::Item> {
-        unsafe { IterMut::new_unchecked(self.value.as_mut_ptr(), self.value.len(), self.channels) }
+    pub fn iter_mut(&mut self) -> IterChannelsMut<'_, T::Item> {
+        unsafe { IterChannelsMut::new_unchecked(self.value.as_mut_ptr(), self.value.len(), self.channels) }
     }
 }
 
@@ -101,7 +101,7 @@ where
     where
         Self: 'this;
 
-    type Iter<'this> = Iter<'this, Self::Sample>
+    type IterChannels<'this> = IterChannels<'this, Self::Sample>
     where
         Self: 'this;
 
@@ -121,7 +121,7 @@ where
     }
 
     #[inline]
-    fn iter_channels(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::IterChannels<'_> {
         (*self).iter()
     }
 }
@@ -203,7 +203,7 @@ where
     where
         Self: 'this;
 
-    type IterMut<'this> = IterMut<'this, Self::Sample>
+    type IterChannelsMut<'this> = IterChannelsMut<'this, Self::Sample>
     where
         Self: 'this;
 
@@ -231,7 +231,7 @@ where
     }
 
     #[inline]
-    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterChannelsMut<'_> {
         (*self).iter_mut()
     }
 }

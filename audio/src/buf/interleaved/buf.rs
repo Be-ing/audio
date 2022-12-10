@@ -7,7 +7,7 @@ use audio_core::{
     Buf, BufMut, ExactSizeBuf, InterleavedBuf, InterleavedBufMut, ResizableBuf, Sample, UniformBuf,
 };
 
-use crate::buf::interleaved::{Iter, IterMut};
+use crate::buf::interleaved::{IterChannels, IterChannelsMut};
 use crate::channel::{InterleavedChannel, InterleavedChannelMut};
 use crate::frame::{InterleavedFrame, InterleavedFramesIter, RawInterleaved};
 
@@ -625,9 +625,9 @@ where
     /// assert_eq!(left, &[1.0, 2.0, 3.0, 4.0]);
     /// assert_eq!(right, &[5.0, 6.0, 7.0, 8.0]);
     /// ```
-    pub fn iter_channels(&self) -> Iter<'_, T> {
+    pub fn iter_channels(&self) -> IterChannels<'_, T> {
         unsafe {
-            Iter::new_unchecked(
+            IterChannels::new_unchecked(
                 ptr::NonNull::new_unchecked(self.data.as_ptr() as *mut _),
                 self.data.len(),
                 self.channels,
@@ -659,9 +659,9 @@ where
     /// assert_eq!(left, &[1.0, 2.0, 3.0, 4.0]);
     /// assert_eq!(right, &[5.0, 6.0, 7.0, 8.0]);
     /// ```
-    pub fn iter_channels_mut(&mut self) -> IterMut<'_, T> {
+    pub fn iter_channels_mut(&mut self) -> IterChannelsMut<'_, T> {
         unsafe {
-            IterMut::new_unchecked(
+            IterChannelsMut::new_unchecked(
                 ptr::NonNull::new_unchecked(self.data.as_mut_ptr()),
                 self.data.len(),
                 self.channels,
@@ -741,7 +741,7 @@ where
     where
         Self::Sample: 'this;
 
-    type Iter<'this> = Iter<'this, Self::Sample>
+    type IterChannels<'this> = IterChannels<'this, Self::Sample>
     where
         Self::Sample: 'this;
 
@@ -761,7 +761,7 @@ where
     }
 
     #[inline]
-    fn iter_channels(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::IterChannels<'_> {
         (*self).iter_channels()
     }
 }
@@ -822,7 +822,7 @@ where
     where
         Self::Sample: 'this;
 
-    type IterMut<'this> = IterMut<'this, Self::Sample>
+    type IterChannelsMut<'this> = IterChannelsMut<'this, Self::Sample>
     where
         Self::Sample: 'this;
 
@@ -846,7 +846,7 @@ where
     }
 
     #[inline]
-    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterChannelsMut<'_> {
         (*self).iter_channels_mut()
     }
 
@@ -863,7 +863,7 @@ impl<'a, T> IntoIterator for &'a Interleaved<T>
 where
     T: Copy,
 {
-    type IntoIter = Iter<'a, T>;
+    type IntoIter = IterChannels<'a, T>;
     type Item = <Self::IntoIter as Iterator>::Item;
 
     #[inline]

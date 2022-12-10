@@ -308,7 +308,7 @@ where
     where
         Self: 'this;
 
-    type Iter<'this> = Iter<'this, B>
+    type IterChannels<'this> = Iter<'this, B>
     where
         Self: 'this;
 
@@ -330,7 +330,7 @@ where
     }
 
     #[inline]
-    fn iter_channels(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::IterChannels<'_> {
         (*self).iter()
     }
 }
@@ -343,7 +343,7 @@ where
     where
         Self: 'this;
 
-    type IterMut<'this> = IterMut<'this, B>
+    type IterChannelsMut<'this> = IterMut<'this, B>
     where
         Self: 'this;
 
@@ -361,7 +361,7 @@ where
     }
 
     #[inline]
-    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterChannelsMut<'_> {
         (*self).iter_mut()
     }
 }

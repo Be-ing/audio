@@ -6,7 +6,7 @@ use core::ptr;
 
 use audio_core::{Buf, BufMut, ExactSizeBuf, ResizableBuf, Sample, UniformBuf};
 
-use crate::buf::sequential::{Iter, IterMut};
+use crate::buf::sequential::{IterChannels, IterChannelsMut};
 use crate::channel::{LinearChannel, LinearChannelMut};
 use crate::frame::{RawSequential, SequentialFrame, SequentialFramesIter};
 
@@ -353,8 +353,8 @@ impl<T> Sequential<T> {
     ///     assert_eq!(chan.as_ref(), &all_zeros[..]);
     /// }
     /// ```
-    pub fn iter_channels(&self) -> Iter<'_, T> {
-        Iter::new(&self.data, self.frames)
+    pub fn iter_channels(&self) -> IterChannels<'_, T> {
+        IterChannels::new(&self.data, self.frames)
     }
 
     /// Construct a mutable iterator over all available channels.
@@ -371,8 +371,8 @@ impl<T> Sequential<T> {
     ///     rng.fill(chan.as_mut());
     /// }
     /// ```
-    pub fn iter_channels_mut(&mut self) -> IterMut<'_, T> {
-        IterMut::new(&mut self.data, self.frames)
+    pub fn iter_channels_mut(&mut self) -> IterChannelsMut<'_, T> {
+        IterChannelsMut::new(&mut self.data, self.frames)
     }
 
     /// Set the number of channels in use.
@@ -695,7 +695,7 @@ where
 }
 
 impl<'a, T> IntoIterator for &'a Sequential<T> {
-    type IntoIter = Iter<'a, T>;
+    type IntoIter = IterChannels<'a, T>;
     type Item = <Self::IntoIter as Iterator>::Item;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -704,7 +704,7 @@ impl<'a, T> IntoIterator for &'a Sequential<T> {
 }
 
 impl<'a, T> IntoIterator for &'a mut Sequential<T> {
-    type IntoIter = IterMut<'a, T>;
+    type IntoIter = IterChannelsMut<'a, T>;
     type Item = <Self::IntoIter as Iterator>::Item;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -751,7 +751,7 @@ where
     where
         Self::Sample: 'this;
 
-    type Iter<'this> = Iter<'this, T>
+    type IterChannels<'this> = IterChannels<'this, T>
     where
         Self: 'this;
 
@@ -767,7 +767,7 @@ where
         (*self).get_channel(channel)
     }
 
-    fn iter_channels(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::IterChannels<'_> {
         (*self).iter_channels()
     }
 }
@@ -826,7 +826,7 @@ where
     where
         Self: 'this;
 
-    type IterMut<'this> = IterMut<'this, T>
+    type IterChannelsMut<'this> = IterChannelsMut<'this, T>
     where
         Self: 'this;
 
@@ -848,7 +848,7 @@ where
         }
     }
 
-    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterChannelsMut<'_> {
         (*self).iter_channels_mut()
     }
 

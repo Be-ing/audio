@@ -41,7 +41,7 @@ where
     where
         Self: 'this;
 
-    type Iter<'this> = Iter<B::Iter<'this>>
+    type IterChannels<'this> = Iter<B::IterChannels<'this>>
     where
         Self: 'this;
 
@@ -58,7 +58,7 @@ where
         Some(self.buf.get_channel(channel)?.skip(self.n))
     }
 
-    fn iter_channels(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::IterChannels<'_> {
         Iter {
             iter: self.buf.iter_channels(),
             n: self.n,
@@ -74,7 +74,7 @@ where
     where
         Self: 'a;
 
-    type IterMut<'a> = IterMut<B::IterMut<'a>>
+    type IterChannelsMut<'a> = IterMut<B::IterChannelsMut<'a>>
     where
         Self: 'a;
 
@@ -89,7 +89,7 @@ where
         self.buf.copy_channel(from, to);
     }
 
-    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterChannelsMut<'_> {
         IterMut {
             iter: self.buf.iter_channels_mut(),
             n: self.n,

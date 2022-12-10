@@ -8,7 +8,7 @@ pub trait BufMut: Buf {
         Self: 'this;
 
     /// A mutable iterator over available channels.
-    type IterMut<'this>: Iterator<Item = Self::ChannelMut<'this>>
+    type IterChannelsMut<'this>: Iterator<Item = Self::ChannelMut<'this>>
     where
         Self: 'this;
 
@@ -41,7 +41,7 @@ pub trait BufMut: Buf {
     ///     vec![[1, 1, 1, 1], [2, 2, 2, 2]],
     /// );
     /// ```
-    fn iter_channels_mut(&mut self) -> Self::IterMut<'_>;
+    fn iter_channels_mut(&mut self) -> Self::IterChannelsMut<'_>;
 
     /// Return a mutable handler to the buffer associated with the channel.
     ///
@@ -118,7 +118,7 @@ where
     where
         Self: 'this;
 
-    type IterMut<'this> = B::IterMut<'this>
+    type IterChannelsMut<'this> = B::IterChannelsMut<'this>
     where
         Self: 'this;
 
@@ -136,7 +136,7 @@ where
     }
 
     #[inline]
-    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterChannelsMut<'_> {
         (**self).iter_channels_mut()
     }
 }

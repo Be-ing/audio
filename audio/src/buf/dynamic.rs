@@ -11,7 +11,7 @@ use std::ptr;
 use std::slice;
 
 mod iter;
-pub use self::iter::{Iter, IterMut};
+pub use self::iter::{IterChannels, IterChannelsMut};
 
 /// A dynamically sized, multi-channel audio buffer.
 ///
@@ -240,9 +240,9 @@ impl<T> Dynamic<T> {
     ///     assert_eq!(chan.as_ref(), &all_zeros[..]);
     /// }
     /// ```
-    pub fn iter_channels(&self) -> Iter<'_, T> {
+    pub fn iter_channels(&self) -> IterChannels<'_, T> {
         // Safety: we're using a trusted length to build the slice.
-        unsafe { Iter::new(self.data.as_ref(self.channels), self.frames) }
+        unsafe { IterChannels::new(self.data.as_ref(self.channels), self.frames) }
     }
 
     /// Construct a mutable iterator over all available channels.
@@ -259,9 +259,9 @@ impl<T> Dynamic<T> {
     ///     rng.fill(chan.as_mut());
     /// }
     /// ```
-    pub fn iter_channels_mut(&mut self) -> IterMut<'_, T> {
+    pub fn iter_channels_mut(&mut self) -> IterChannelsMut<'_, T> {
         // Safety: we're using a trusted length to build the slice.
-        unsafe { IterMut::new(self.data.as_mut(self.channels), self.frames) }
+        unsafe { IterChannelsMut::new(self.data.as_mut(self.channels), self.frames) }
     }
 
     /// Set the size of the buffer. The size is the size of each channel's
@@ -674,7 +674,7 @@ where
 }
 
 impl<'a, T> IntoIterator for &'a Dynamic<T> {
-    type IntoIter = Iter<'a, T>;
+    type IntoIter = IterChannels<'a, T>;
     type Item = <Self::IntoIter as Iterator>::Item;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -683,7 +683,7 @@ impl<'a, T> IntoIterator for &'a Dynamic<T> {
 }
 
 impl<'a, T> IntoIterator for &'a mut Dynamic<T> {
-    type IntoIter = IterMut<'a, T>;
+    type IntoIter = IterChannelsMut<'a, T>;
     type Item = <Self::IntoIter as Iterator>::Item;
 
     fn into_iter(self) -> Self::IntoIter {
@@ -749,7 +749,7 @@ where
     where
         Self::Sample: 'this;
 
-    type Iter<'this> = Iter<'this, T>
+    type IterChannels<'this> = IterChannels<'this, T>
     where
         Self::Sample: 'this;
 
@@ -769,7 +769,7 @@ where
     }
 
     #[inline]
-    fn iter_channels(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::IterChannels<'_> {
         (*self).iter_channels()
     }
 }
@@ -800,7 +800,7 @@ where
     where
         Self: 'this;
 
-    type IterMut<'this> = IterMut<'this, T>
+    type IterChannelsMut<'this> = IterChannelsMut<'this, T>
     where
         Self: 'this;
 
@@ -833,7 +833,7 @@ where
         }
     }
 
-    fn iter_channels_mut(&mut self) -> Self::IterMut<'_> {
+    fn iter_channels_mut(&mut self) -> Self::IterChannelsMut<'_> {
         (*self).iter_channels_mut()
     }
 }

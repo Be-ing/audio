@@ -46,7 +46,7 @@ pub trait Buf {
         Self: 'this;
 
     /// An iterator over available channels.
-    type Iter<'this>: Iterator<Item = Self::Channel<'this>>
+    type IterChannels<'this>: Iterator<Item = Self::Channel<'this>>
     where
         Self: 'this;
 
@@ -157,7 +157,7 @@ pub trait Buf {
     /// test(audio::sequential![[1, 2, 3, 4], [5, 6, 7, 8]]);
     /// test(audio::interleaved![[1, 2, 3, 4], [5, 6, 7, 8]]);
     /// ```
-    fn iter_channels(&self) -> Self::Iter<'_>;
+    fn iter_channels(&self) -> Self::IterChannels<'_>;
 
     /// Construct a new buffer where `n` frames are skipped.
     ///
@@ -294,7 +294,7 @@ where
     where
         Self: 'a;
 
-    type Iter<'a> = B::Iter<'a>
+    type IterChannels<'a> = B::IterChannels<'a>
     where
         Self: 'a;
 
@@ -314,7 +314,7 @@ where
     }
 
     #[inline]
-    fn iter_channels(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::IterChannels<'_> {
         (**self).iter_channels()
     }
 }
@@ -329,7 +329,7 @@ where
     where
         Self: 'this;
 
-    type Iter<'this> = B::Iter<'this>
+    type IterChannels<'this> = B::IterChannels<'this>
     where
         Self: 'this;
 
@@ -349,7 +349,7 @@ where
     }
 
     #[inline]
-    fn iter_channels(&self) -> Self::Iter<'_> {
+    fn iter_channels(&self) -> Self::IterChannels<'_> {
         (**self).iter_channels()
     }
 }
