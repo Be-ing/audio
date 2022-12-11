@@ -1,5 +1,5 @@
 use crate::channel::{LinearChannel, LinearChannelMut};
-use audio_core::{Buf, BufMut, ResizableBuf, Sample};
+use audio_core::{Buf, BufMut, Channel, ExactSizeBuf, ResizableBuf, Sample};
 
 /// A wrapper for an external dynamic audio buffer.
 ///
@@ -90,6 +90,18 @@ macro_rules! impl_buf {
                 IterChannels {
                     iter: self.value[..].iter(),
                 }
+            }
+        }
+
+        impl<T $(, $($extra)*)*> ExactSizeBuf for Dynamic<$ty>
+            where T: Copy
+        {
+            fn frames(&self) -> usize {
+                let mut frames = 0;
+                for channel in self.iter_channels() {
+                    frames = usize::min(frames, channel.len());
+                }
+                frames
             }
         }
     };
